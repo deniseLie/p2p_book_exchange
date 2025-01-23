@@ -4,6 +4,7 @@ import { useAuthContext } from '../../context/AuthContext';
 import { browseUserBooks } from '../../axios/browse_req';
 import '../../css/BrowsePage.css';
 import { useNavigate } from 'react-router-dom';
+import { createExchangeRequest } from '../../axios/exchange_req';
 
 const BrowseUserBooks = () => {
     // State variables for the data, filters, and pagination
@@ -84,12 +85,30 @@ const BrowseUserBooks = () => {
 
     // Handle book on click
     const bookOnClick = (userBook) => {
-        navigate('/')
+        // navigate('/')
     }
 
     // Request Exchange
-    const requestExchange = () => {
-        navigate('/request-exchange')
+    const requestExchange = async (book) => {
+        
+        const exchangeData = {
+            ownerUserID: book?.userId?._id,
+            ownerBookID: [book?.bookId?._id]
+        };
+        // console.log(exchangeData);
+
+        try {
+            const result = await createExchangeRequest(authToken, exchangeData);
+            alert('Exchange request created successfully!');
+            console.log(result);
+            
+            // navigate
+            navigate('/exchangeDetail', { state: { exchangeId: result?.exchange?._id } });
+        } catch (error) {
+            alert('Failed to create exchange request');
+            console.log('request exchange failed', error)
+        }
+
     }
     
 
@@ -172,7 +191,7 @@ const BrowseUserBooks = () => {
                                 <strong>User:</strong> {userBook?.userId.username}
                             </div>
 
-                            <button onClick={requestExchange}>Request Exchange</button>
+                            <button onClick={() => requestExchange(userBook)}>Request Exchange</button>
                         </li>
                     ))}
                 </ul>

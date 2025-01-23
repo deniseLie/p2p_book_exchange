@@ -5,21 +5,40 @@ const Exchange = require('../models/exchangeModel');
 // Create exchange request
 exports.createExchangeRequest = async (req, res) => {
     try {
-        const { requesterUserID, ownerUserID, ownerBookID } = req.body;
-    
-        // Validate if the user exists
+        const { ownerUserID, ownerBookID } = req.body;
+        const requesterUserID = req.user._id;
+        console.log(req.body);
+        console.log(req.user); 
+        
+        const { ObjectId } = require('mongoose').Types;
+
+        // Validate requesterUserID
+        if (!ObjectId.isValid(requesterUserID)) {
+            return res.status(400).json({ message: 'Invalid requesterUserID' });
+        }
+        
+        // Validate ownerUserID
+        if (!ObjectId.isValid(ownerUserID)) {
+            return res.status(400).json({ message: 'Invalid ownerUserID' });
+        }
+        
         const requester = await User.findById(requesterUserID);
         const owner = await User.findById(ownerUserID);
-    
+        
         if (!requester || !owner) {
             return res.status(404).json({ message: 'User not found' });
         }
-    
-        // Check if books exist
-        const ownerBooks = await Book.find({ '_id': { $in: ownerBookID } });
-    
-        if (ownerBooks.length !== ownerBookID.length) {
-            return res.status(404).json({ message: 'One or more books not found' });
+      
+        // Check if each bookId in ownerBookID exists
+        for (const bookId of ownerBookID) {
+            if (!ObjectId.isValid(bookId)) {
+                return res.status(400).json({ message: `Invalid bookId: ${bookId}` });
+            }
+        
+            const bookExists = await Book.exists({ _id: bookId });
+            if (!bookExists) {
+                return res.status(404).json({ message: `Book with ID ${bookId} not found` });
+            }
         }
     
         // Create a new exchange request
@@ -36,7 +55,7 @@ exports.createExchangeRequest = async (req, res) => {
             exchange: savedExchange,
         });
     } catch (err) {
-      console.error(err);
+      console.error(err?.message. err);
       res.status(500).json({ message: 'Server error' });
     }
 };

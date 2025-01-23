@@ -34,6 +34,7 @@ export default function Header () {
             <div className="user-actions">
                 {authToken ? (
                     <>
+                        <a href="/exchanges" className="login-link">Exchanges</a>  
                         <span className="icon">💬</span>
                         <span className="icon">🔔</span>
                         <img 

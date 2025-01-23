@@ -64,7 +64,7 @@ exports.browseUserBooks = async (req, res) => {
         } = req.query;
 
         // User Id
-        const userId = req.user._id; 
+        const currentUserId = req.user._id; 
         
         // Build a filter object
         const filter = {};

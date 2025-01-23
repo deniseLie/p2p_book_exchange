@@ -5,14 +5,19 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
     const [authToken, setAuthToken] = useState(localStorage.getItem('authToken') || null);
+    const [userId, setUserId] = useState(null);
 
     const saveToken = (token) => {
         setAuthToken(token);
         localStorage.setItem('authToken', token); // Save to localStorage
+
+        const decodedToken = jwtDecode(token); // Decode token to extract userId
+        setUserId(decodedToken.userId); // Assuming 'userId' is in the decoded token
     };
 
     const removeToken = () => {
         setAuthToken(null);
+        setUserId(null); // Clear the userId when logging out
         localStorage.removeItem('authToken'); // Remove from localStorage
     };
 
@@ -35,7 +40,7 @@ export function AuthProvider({ children }) {
     };
 
     return (
-        <AuthContext.Provider value={{ authToken, login, logout, isTokenExpired }}>
+        <AuthContext.Provider value={{ authToken, userId, login, logout, isTokenExpired }}>
             {children}
         </AuthContext.Provider>
     );

@@ -1,17 +1,18 @@
 const express = require('express');
 const router = express.Router();
 const exchangeController = require('../controllers/exchangeController');
+const { verifyToken } = require('../middleware/authMiddleware');
 
 // Route for creating a new exchange request
-router.post('/create', exchangeController.createExchangeRequest);
+router.post('/create', verifyToken, exchangeController.createExchangeRequest);
 
 // Route for updating the status of an exchange
-router.put('/update', exchangeController.updateExchangeStatus);
+router.put('/update', verifyToken, exchangeController.updateExchangeStatus);
 
 // Route for fetching all exchanges for a specific user
-router.get('/user/:userID', exchangeController.getUserExchanges);
+router.get('/user/:userID', verifyToken, exchangeController.getUserExchanges);
 
-// Route for fetching all exchanges for a specific user
-router.get('/exchange/:exchangeID', exchangeController.getExchangeById);
+// Get a specific exchange details by exchange id 
+router.get('/:exchangeId', verifyToken, exchangeController.getExchangeById);
 
 module.exports = router;
