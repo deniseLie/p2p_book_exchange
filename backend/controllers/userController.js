@@ -52,6 +52,7 @@ const registerUser = async (req, res) => {
         });
 
         res.status(201).json({
+            message: 'User registered successfully',
             _id: user._id,
             username: user.username,
             email: user.email,
@@ -176,13 +177,13 @@ const sendPasswordResetEmail = async (req, res) => {
             auth: {
                 user: process.env.EMAIL_USERNAME,
                 pass: process.env.EMAIL_PASSWORD,
-            },
+            }
         });
 
-        const resetUrl = `http://localhost:5000/api/users/reset-password/${resetToken}`;
+        const resetUrl = `http://localhost:3000/reset-password?token=${resetToken}`;
 
         const message = {
-            from: process.env.EMAIL_USER,
+            from: process.env.EMAIL_USERNAME,
             to: email,
             subject: 'Password Reset',
             text: `To reset your password, please click on the following link: ${resetUrl}`,
@@ -190,7 +191,8 @@ const sendPasswordResetEmail = async (req, res) => {
 
         transporter.sendMail(message, (error, info) => {
             if (error) {
-              return res.status(500).json({ message: 'Email could not be sent' });
+                console.error('Error sending email:', error);
+                return res.status(500).json({ message: 'Email could not be sent' });
             }
             res.json({ message: 'Password reset link sent to your email' });
         });
