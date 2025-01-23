@@ -55,7 +55,7 @@ exports.createExchangeRequest = async (req, res) => {
             exchange: savedExchange,
         });
     } catch (err) {
-      console.error(err?.message. err);
+      console.error(err?.message, err);
       res.status(500).json({ message: 'Server error' });
     }
 };
@@ -90,6 +90,40 @@ exports.updateExchangeStatus = async (req, res) => {
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: 'Server error' });
+    }
+};
+
+
+// Get all pending exchanges where the user is the book owner (requested by others)
+exports.getPendingExchanges = async (req, res) => {
+    try {
+        // Get userId from the authenticated user
+        const userId = req.user._id;
+
+        if (!userId) {
+            return res.status(400).json({ message: 'User ID is missing from the request' });
+        }
+
+        console.log('Fetching pending exchanges for user:', userId);
+
+        // Find all exchanges where the ownerUserID is the current user and status is 'pending'
+        const exchanges = await Exchange.find({
+            ownerUserID: userId,  // User is the owner of the book
+            status: 'pending'     // Status is 'pending'
+        })
+        .populate('requesterUserID ownerUserID requesterBookID ownerBookID'); // Populate relevant fields
+
+        if (!exchanges || exchanges.length === 0) {
+            return res.status(404).json({ message: 'No pending exchanges found' });
+        }
+
+        return res.status(200).json({
+            message: 'Pending exchanges fetched successfully',
+            exchanges,
+        });
+    } catch (err) {
+        console.error('Error fetching pending exchanges:', err);
+        return res.status(500).json({ message: 'Server error' });
     }
 };
 

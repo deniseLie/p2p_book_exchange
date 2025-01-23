@@ -3,7 +3,7 @@ import '../../css/ExchangeDetailPage.css'; // Assuming you'll add some custom st
 import { getExchangeById } from '../../axios/exchange_req';
 import { useLocation } from 'react-router-dom';
 import { useAuthContext } from '../../context/AuthContext';
-import PageLayout from '../Template/template';
+import PageLayout from '../Template/template'
 
 const ExchangeDetailPage = () => {
   const location = useLocation();

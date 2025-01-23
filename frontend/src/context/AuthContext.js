@@ -10,15 +10,23 @@ export function AuthProvider({ children }) {
     const saveToken = (token) => {
         setAuthToken(token);
         localStorage.setItem('authToken', token); // Save to localStorage
-
-        const decodedToken = jwtDecode(token); // Decode token to extract userId
-        setUserId(decodedToken.userId); // Assuming 'userId' is in the decoded token
+    
+        try {
+            const decodedToken = jwtDecode(token); // Decode token to extract userId
+            console.log("Decoded Token:", decodedToken);  // Log to check the structure
+            setUserId(decodedToken.id); // Assuming 'userId' is in the decoded token
+            localStorage.setItem('userId', decodedToken.id);
+        } catch (error) {
+            console.log("Failed to decode token", error);
+        }
     };
+    
 
     const removeToken = () => {
         setAuthToken(null);
         setUserId(null); // Clear the userId when logging out
         localStorage.removeItem('authToken'); // Remove from localStorage
+        localStorage.removeItem('userId');
     };
 
     const login = (token) => {

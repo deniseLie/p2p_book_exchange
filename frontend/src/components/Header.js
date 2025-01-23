@@ -28,9 +28,12 @@ export default function Header () {
             <div className="logo">
                 <span role="img" aria-label="logo">📚</span> Bookaround
             </div>
-            <div className='search-bar' onClick={oclickBrowseBooks}>
-                <input type="text" placeholder="Search for book..." />
-            </div>
+
+            {authToken && (
+                <div className='search-bar' onClick={oclickBrowseBooks}>
+                    <input type="text" placeholder="Search for book..." />
+                </div>
+            )}
             <div className="user-actions">
                 {authToken ? (
                     <>

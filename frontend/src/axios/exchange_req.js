@@ -25,6 +25,7 @@ export const getAllExchangesByUserId = async (token, userId) => {
                 'Content-Type': 'application/json',
             },
         });
+        console.log(userId, response.data)
         return response.data;
     } catch (error) {
         console.error('Error Get exchange by user id:', error.response?.data || error.message);
@@ -45,6 +46,22 @@ export const getExchangeById = async (token, exchangeId) => {
         return response.data;
     } catch (error) {
         console.error('Error Get exchange by id:', error.response?.data || error.message);
+        throw error;
+    }
+};
+
+// Get all pending exchanges where the user is the book owner (requests from others)
+export const getPendingExchangesByUserId = async (token) => {
+    try {
+        const response = await axios.get(`http://localhost:5000/exchanges/pending`, {
+            headers: {
+                Authorization: `Bearer ${token}`, // Assuming you're using token-based authentication
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching pending exchanges by user id:', error.response?.data || error.message);
         throw error;
     }
 };

@@ -5,8 +5,8 @@ import LoginRegPage from './pages/auth/AuthFlow';
 import { AuthProvider } from './context/AuthContext';
 import ProfilePage from './pages/profile/ProfilePage';
 import BrowseUserBooks from './pages/browse/Browsepage';
-import ExchangeDetailPage from './pages/exchange/ExchangeDetailPage';
 import ExchangesListPage from './pages/exchange/ExchangesListPage';
+import ExchangeDetailPage from './pages/exchange/ExchangeDetailPage';
 
 const App = () => (
   <AuthProvider>

@@ -29,3 +29,33 @@
     background-color: #0056b3;
   }
   
+  .status {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.status.pending {
+    background-color: #ffcc00;
+    color: white;
+}
+
+.status.approved {
+    background-color: #28a745;
+    color: white;
+}
+
+.status.rejected {
+    background-color: #dc3545;
+    color: white;
+}
+
+.status.completed {
+    background-color: #6c757d;
+    color: white;
+}
+
+.status.unknown {
+    background-color: #f8f9fa;
+    color: black;
+}

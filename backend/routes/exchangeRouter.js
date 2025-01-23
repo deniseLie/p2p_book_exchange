@@ -15,4 +15,7 @@ router.get('/user/:userID', verifyToken, exchangeController.getUserExchanges);
 // Get a specific exchange details by exchange id 
 router.get('/:exchangeId', verifyToken, exchangeController.getExchangeById);
 
+// Get all pending exchanges where the user is the owner (someone is requesting the user's books)
+router.get('/pending', verifyToken, exchangeController.getPendingExchanges);
+
 module.exports = router;
