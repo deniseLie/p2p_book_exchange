@@ -1,11 +1,10 @@
 const UserBook = require('../models/userBookModel');
-const Book = require('../models/bookModel');
 
 // Browse available books with optional filters, sorting, and pagination
 exports.browseBooks = async (req, res) => {
     try {
         // Extract query parameters for filtering, sorting, and pagination
-        const { title, author, genre, condition, sortBy, page = 1, limit = 10 } = req.query;
+        const { title, author, genre, condition, sortBy = 'createdAt', order = 'desc', page = 1, limit = 10 } = req.query;
 
         // Build a filter object
         const filter = { bookStatus: 'available' }; // Only fetch available books
@@ -15,12 +14,17 @@ exports.browseBooks = async (req, res) => {
         if (genre) filter.genre = { $regex: genre, $options: 'i' };
         if (condition) filter.bookCondition = condition; // Exact match for condition
 
-        // Populate and paginate results
+        // Calculate pagination values
+        const pageNumber = parseInt(page);
+        const limitNumber = parseInt(limit);
+        const skip = (pageNumber - 1) * limitNumber;
+
+        // Fetch filtered and paginated results
         const books = await UserBook.find(filter)
             .populate('bookId') // Join with the Book model to get detailed book info
-            .sort(sortBy ? { [sortBy]: 1 } : { createdAt: -1 }) // Sort by field (default: newest)
-            .skip((page - 1) * limit) // Skip records for pagination
-            .limit(parseInt(limit)); // Limit records per page
+            .sort({ [sortBy]: order === 'desc' ? -1 : 1 }) // Sort by the specified field and order
+            .skip(skip) // Skip records for pagination
+            .limit(limitNumber); // Limit records per page
 
         // Count total available books for pagination info
         const totalBooks = await UserBook.countDocuments(filter);
@@ -30,8 +34,8 @@ exports.browseBooks = async (req, res) => {
             books,
             pagination: {
                 totalBooks,
-                currentPage: parseInt(page),
-                totalPages: Math.ceil(totalBooks / limit),
+                currentPage: pageNumber,
+                totalPages: Math.ceil(totalBooks / limitNumber),
             },
         });
     } catch (error) {
@@ -40,17 +44,110 @@ exports.browseBooks = async (req, res) => {
     }
 };
 
-const UserBook = require('../models/userBookModel');
-
 // Get all userBooks
 exports.browseUserBooks = async (req, res) => {
     try {
-        const userBooks = await UserBook.find()
-            .populate('bookId') // Populate book details
-            .populate('userId', 'username email'); // Populate user details with only username and email
+        // Extract query parameters for filtering, sorting, and pagination
+        const {
+            title,
+            author,
+            genre,
+            condition,
+            username,
+            email,
+            bookStatus,
+            sortBy = 'createdAt',
+            order = 'desc',
+            page = 1,
+            limit = 10,
+        } = req.query;
 
-        res.status(200).json(userBooks);
+        // Build a filter object
+        const filter = {};
+
+        // Apply filters for books
+        if (title) filter['bookId.title'] = { $regex: title, $options: 'i' }; // Case-insensitive title search
+        if (author) filter['bookId.author'] = { $regex: author, $options: 'i' };
+        if (genre) filter['bookId.genre'] = { $regex: genre, $options: 'i' };
+        if (condition) filter.bookCondition = condition; // Exact match for condition
+        if (bookStatus) filter.bookStatus = bookStatus; // Match book status (e.g., 'available', 'pending')
+
+        // Apply filters for users
+        if (username) filter['userId.username'] = { $regex: username, $options: 'i' }; // Case-insensitive username search
+        if (email) filter['userId.email'] = { $regex: email, $options: 'i' }; // Case-insensitive email search
+
+        // Calculate pagination values
+        const pageNumber = parseInt(page);
+        const limitNumber = parseInt(limit);
+        const skip = (pageNumber - 1) * limitNumber;
+
+        // Fetch filtered and paginated results
+        const userBooks = await UserBook.find(filter)
+            .populate({
+                path: 'bookId',
+                match: {
+                    ...(title && { title: { $regex: title, $options: 'i' } }),
+                    ...(author && { author: { $regex: author, $options: 'i' } }),
+                    ...(genre && { genre: { $regex: genre, $options: 'i' } }),
+                },
+            }) // Populate book details with filtering
+            .populate({
+                path: 'userId',
+                match: {
+                    ...(username && { username: { $regex: username, $options: 'i' } }),
+                    ...(email && { email: { $regex: email, $options: 'i' } }),
+                },
+                select: 'username email', // Only select username and email fields
+            }) // Populate user details with filtering
+            .sort({ [sortBy]: order === 'desc' ? -1 : 1 }) // Sort by the specified field and order
+            .skip(skip) // Skip records for pagination
+            .limit(limitNumber); // Limit records per page
+
+        // Count total userBooks for pagination info
+        const totalUserBooks = await UserBook.countDocuments(filter);
+
+        // Send response with userBooks and pagination info
+        res.status(200).json({
+            userBooks,
+            pagination: {
+                totalUserBooks,
+                currentPage: pageNumber,
+                totalPages: Math.ceil(totalUserBooks / limitNumber),
+            },
+        });
     } catch (error) {
         res.status(500).json({ message: 'Error fetching user books', error });
+    }
+};
+
+exports.browseUserBook = async (req, res) => {
+    try {
+        const { userBookId } = req.params;
+
+        // Find the specific UserBook entry by ID and populate book details
+        const userBook = await UserBook.findById(userBookId)
+            .populate('bookId') // Include book details
+            .populate('userId', 'username email location bio'); // Include user details (only selected fields)
+
+        if (!userBook) {
+            return res.status(404).json({ message: 'UserBook not found' });
+        }
+
+        // Find other books owned by the same user (excluding the current book)
+        const otherBooks = await UserBook.find({
+            userId: userBook.userId._id,
+            _id: { $ne: userBookId }, // Exclude the current book
+        }).populate('bookId');
+
+        // Respond with detailed information
+        res.status(200).json({
+            userBookDetails: {
+                userBook,
+                otherBooksOwned: otherBooks,
+            },
+        });
+    } catch (error) {
+        console.error('Error fetching user book details:', error);
+        res.status(500).json({ message: 'Error fetching user book details', error });
     }
 };

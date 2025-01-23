@@ -15,7 +15,7 @@ exports.getAllUsers = async (req, res) => {
 };
 
 // Register User
-const registerUser = async (req, res) => {
+exports.registerUser = async (req, res) => {
     const { username, email, password } = req.body;
 
     // Check if all required fields are provided
@@ -73,7 +73,7 @@ const registerUser = async (req, res) => {
 };
 
 // Login User with JWT
-const loginUser = async (req, res) => {
+exports.loginUser = async (req, res) => {
     const { email, password } = req.body;
   
     // Check if all required fields are provided
@@ -110,7 +110,7 @@ const loginUser = async (req, res) => {
     }
   };
 
-const updateUserProfile = async (req, res) => {
+exports.updateUserProfile = async (req, res) => {
     const { username, location, bio } = req.body;
   
     // Check if user is authenticated
@@ -154,7 +154,7 @@ const updateUserProfile = async (req, res) => {
 };
 
 // Password Reset Email
-const sendPasswordResetEmail = async (req, res) => {
+exports.sendPasswordResetEmail = async (req, res) => {
     const { email } = req.body;
 
     // Check if email is provided
@@ -212,7 +212,7 @@ const sendPasswordResetEmail = async (req, res) => {
 };
 
 // Reset Password 
-const resetPassword = async (req, res) => {
+exports.resetPassword = async (req, res) => {
     const { resetToken, newPassword } = req.body;
 
     // Check if resetToken and newPassword are provided
@@ -262,13 +262,4 @@ const resetPassword = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: 'Server Error' });
     }
-};
-
-module.exports = {
-    getAllUsers,
-    registerUser,
-    loginUser,
-    updateUserProfile,
-    sendPasswordResetEmail,
-    resetPassword
 };

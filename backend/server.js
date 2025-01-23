@@ -11,6 +11,7 @@ const connectDB = require('./config/db');
 const bookRoutes = require('./routes/bookRoutes');
 const userRoutes = require('./routes/userRoutes');
 const userBookRoutes = require('./routes/userBookRoutes');
+const browseUserBookRoutes = require('./routes/browseUserBookRoutes');
 
 const app = express();
 
@@ -23,7 +24,7 @@ app.use(express.json()); // For JSON body parsing
 app.use('/api/books', bookRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/userbooks', userBookRoutes);
-app.use('/api/browse', userBookRoutes);
+app.use('/api/browse', browseUserBookRoutes);
 
 // Connection URI from the environment variable
 const mongoURI = process.env.MONGO_URI; // Load from environment variable

@@ -1,25 +1,25 @@
 const express = require('express');
-const { getAllUsers, registerUser, loginUser, updateUserProfile, sendPasswordResetEmail, resetPassword } = require('../controllers/userController');
+const userController = require('../controllers/userController');
 const { verifyToken } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
 // Get all Users
-router.get('/', getAllUsers);
+router.get('/', userController.getAllUsers);
 
 // Register a new user
-router.post('/register', registerUser);
+router.post('/register', userController.registerUser);
 
 // Login user
-router.post('/login', loginUser);
+router.post('/login', userController.loginUser);
 
 // Update user profile
-router.put('/profile', verifyToken, updateUserProfile);
+router.put('/profile', verifyToken, userController.updateUserProfile);
 
 // Send password reset email
-router.post('/password-reset', sendPasswordResetEmail);
+router.post('/password-reset', userController.sendPasswordResetEmail);
 
 // Reset password with reset token
-router.put('/reset-password/:resetToken', resetPassword);
+router.put('/reset-password/:resetToken', userController.resetPassword);
 
 module.exports = router;
