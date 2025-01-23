@@ -4,7 +4,8 @@ const Book = require('../models/bookModel');
 // Get all books of a user
 exports.getUserBooks = async (req, res) => {
     try {
-        const { userId } = req.params;
+        const userId = req.user._id; 
+
         const userBooks = await UserBook.find({ userId }).populate('bookId');
         res.status(200).json(userBooks);
     } catch (error) {
@@ -12,18 +13,31 @@ exports.getUserBooks = async (req, res) => {
     }
 };
 
-// Add an existing book to the user's collection
+// Add a book to user's collection
 exports.addUserBook = async (req, res) => {
     try {
-        const { userId, bookId } = req.body;
-        const book = await Book.findById(bookId);
-        if (!book) return res.status(404).json({ message: 'Book not found' });
+        const userId = req.user._id;  // Extract userId from req.user
+        const { bookId, bookStatus, bookCondition } = req.body;
 
-        const newUserBook = new UserBook({ userId, bookId });
+        // Check if the book already exists in the user's collection
+        const existingBook = await UserBook.findOne({ userId, bookId });
+        if (existingBook) {
+            return res.status(400).json({ message: 'Book already in your collection' });
+        }
+
+        // Add book to user's collection
+        const newUserBook = new UserBook({
+            userId,
+            bookId,
+            bookStatus,
+            bookCondition,
+        });
+
         await newUserBook.save();
-        res.status(201).json({ message: 'Book added to user collection', newUserBook });
+        res.status(201).json({ message: 'Book added to your collection', userBook: newUserBook });
     } catch (error) {
-        res.status(500).json({ message: 'Error adding book to user collection', error });
+        console.error(error);
+        res.status(500).json({ message: 'Error adding book to collection' });
     }
 };
 

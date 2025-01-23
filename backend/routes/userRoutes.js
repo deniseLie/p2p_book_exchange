@@ -1,6 +1,6 @@
 const express = require('express');
 const { getAllUsers, registerUser, loginUser, updateUserProfile, sendPasswordResetEmail, resetPassword } = require('../controllers/userController');
-const { protect } = require('../middleware/authMiddleware');
+const { verifyToken } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
@@ -14,7 +14,7 @@ router.post('/register', registerUser);
 router.post('/login', loginUser);
 
 // Update user profile
-router.put('/profile', protect, updateUserProfile);
+router.put('/profile', verifyToken, updateUserProfile);
 
 // Send password reset email
 router.post('/password-reset', sendPasswordResetEmail);

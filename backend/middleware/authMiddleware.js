@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 const User = require('../models/userModel')
 
-const protect = async (req, res, next) => {
+const verifyToken = async (req, res, next) => {
     let token;
 
     if (
@@ -30,4 +30,4 @@ const protect = async (req, res, next) => {
     }
 }
 
-module.exports = { protect };
+module.exports = { verifyToken };
