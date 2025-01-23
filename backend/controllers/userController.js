@@ -61,11 +61,18 @@ exports.registerUser = async (req, res) => {
             password: hashedPassword,
         });
 
+        // Generate JWT
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+            expiresIn: '1d',
+        });
+    
+        
         res.status(201).json({
             message: 'User registered successfully',
             _id: user._id,
             username: user.username,
             email: user.email,
+            token,
         });
     } catch (error) {
         res.status(500).json({ message: 'Server Error' });
@@ -108,8 +115,29 @@ exports.loginUser = async (req, res) => {
     } catch (error) {
       res.status(500).json({ message: 'Server Error' });
     }
-  };
+};
 
+// Get user Profile
+exports.getUserProfile = async (req, res) => {
+    try {
+        // Check if user is authenticated
+        if (!req.user || !req.user._id) {
+            return res.status(401).json({ message: 'Unauthorized, please log in first' });
+        }
+
+        // Find user by ID
+        const user = await User.findById(req.user.id).select('-password'); // Exclude password field
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.json(user);
+    } catch (error) {
+        res.status(500).json({ message: 'Server Error' });
+    }
+};
+
+// Update user Profile
 exports.updateUserProfile = async (req, res) => {
     const { username, location, bio } = req.body;
   
@@ -259,6 +287,25 @@ exports.resetPassword = async (req, res) => {
 
         await user.save();
         res.json({ message: 'Password reset successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Server Error' });
+    }
+};
+
+// Check if email already exists
+exports.checkEmailAvailability = async (req, res) => {
+    const { email } = req.body;
+
+    if (!email) {
+        return res.status(400).json({ message: 'Email is required' });
+    }
+
+    try {
+        const userExists = await User.findOne({ email });
+        if (userExists) {
+            return res.status(200).json({ message: 'Unavailable' });
+        }
+        res.status(200).json({ message: 'Available' });
     } catch (error) {
         res.status(500).json({ message: 'Server Error' });
     }

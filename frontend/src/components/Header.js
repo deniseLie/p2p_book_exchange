@@ -1,6 +1,9 @@
+import { useAuthContext } from '../context/AuthContext'
 import '../css/Header.css'
 
-export default function Header({ isLoggedIn }) {
+export default function Header () {
+    const { saveToken } = useAuthContext();
+
     return (
         <header className="header">
             <div className="logo">
@@ -10,7 +13,7 @@ export default function Header({ isLoggedIn }) {
                 <input type="text" placeholder="Search for book..." />
             </div>
             <div className="user-actions">
-                {isLoggedIn ? (
+                {saveToken ? (
                     <>
                         <span className="icon">💬</span>
                         <span className="icon">🔔</span>
@@ -18,7 +21,7 @@ export default function Header({ isLoggedIn }) {
                     </>
                 ) : (
                     <>
-                        <a href="/login" className="login-link">Login</a>       
+                        <a href="/signInUp" className="login-link">Login</a>       
                         {/* <a href="/register" className="login-link">Login</a>*/}
                     </>
                 )}

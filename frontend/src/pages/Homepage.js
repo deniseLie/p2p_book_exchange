@@ -1,5 +1,5 @@
 import React from 'react';
-import '../css/Homepage.css' // Styling for the homepage
+import '../css/Homepage.css';
 import Header from '../components/Header';
 
 const HomePage = () => {

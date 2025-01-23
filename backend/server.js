@@ -22,11 +22,11 @@ connectDB();
 // Middleware
 app.use(cors());
 app.use(express.json()); // For JSON body parsing
-app.use('/api/books', bookRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/userbooks', userBookRoutes);
-app.use('/api/browse', browseUserBookRoutes);
-app.use('/api/exchanges', exchangeRouter);
+app.use('/books', bookRoutes);
+app.use('/users', userRoutes);
+app.use('/userbooks', userBookRoutes);
+app.use('/browse', browseUserBookRoutes);
+app.use('/exchanges', exchangeRouter);
 
 // Connection URI from the environment variable
 const mongoURI = process.env.MONGO_URI; // Load from environment variable
