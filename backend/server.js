@@ -9,6 +9,7 @@ dotenv.config();
 // Import your custom modules
 const connectDB = require('./config/db');
 const bookRoutes = require('./routes/bookRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 const app = express();
 
@@ -19,6 +20,7 @@ connectDB();
 app.use(cors());
 app.use(express.json()); // For JSON body parsing
 app.use('/api/books', bookRoutes);
+app.use('/api/users', userRoutes);
 
 // Connection URI from the environment variable
 const mongoURI = process.env.MONGO_URI; // Load from environment variable
