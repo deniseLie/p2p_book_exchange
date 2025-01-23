@@ -18,12 +18,17 @@ export default function Header () {
         navigate('/profile'); 
     };
 
+    // Navigate to browse page
+    const oclickBrowseBooks = () => {
+        navigate('/browse');
+    }
+
     return (
         <header className="header">
             <div className="logo">
                 <span role="img" aria-label="logo">📚</span> Bookaround
             </div>
-            <div className='search-bar'>
+            <div className='search-bar' onClick={oclickBrowseBooks}>
                 <input type="text" placeholder="Search for book..." />
             </div>
             <div className="user-actions">

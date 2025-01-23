@@ -53,7 +53,7 @@ exports.browseUserBooks = async (req, res) => {
             title,
             author,
             genre,
-            condition,
+            bookCondition,
             username,
             email,
             bookStatus,
@@ -67,10 +67,10 @@ exports.browseUserBooks = async (req, res) => {
         const filter = {};
 
         // Apply filters for books
-        if (title) filter['bookId.title'] = { $regex: title, $options: 'i' }; // Case-insensitive title search
-        if (author) filter['bookId.author'] = { $regex: author, $options: 'i' };
-        if (genre) filter['bookId.genre'] = { $regex: genre, $options: 'i' };
-        if (condition) filter.bookCondition = condition; // Exact match for condition
+        // if (title) filter['bookId.title'] = { $regex: title, $options: 'i' }; // Case-insensitive title search
+        // if (author) filter['bookId.author'] = { $regex: author, $options: 'i' };
+        // if (genre) filter['bookId.genre'] = { $regex: genre, $options: 'i' };
+        if (bookCondition) filter.bookCondition = bookCondition; // Exact match for condition
         if (bookStatus) filter.bookStatus = bookStatus; // Match book status (e.g., 'available', 'pending')
 
         // Apply filters for users
@@ -121,6 +121,7 @@ exports.browseUserBooks = async (req, res) => {
     }
 };
 
+// Get one specific book
 exports.browseUserBook = async (req, res) => {
     try {
         const { userBookId } = req.params;
