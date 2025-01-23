@@ -13,7 +13,7 @@ const HomePage = () => {
           <a href="#" className="button">Join Now</a>
         </div>
         <div className="hero-image">
-          <img src="https://via.placeholder.com/400x500" alt="Book Exchange" />
+          <img src="https://png.pngtree.com/png-clipart/20220320/original/pngtree-pile-of-books-3d-icon-education-and-student-concept-png-image_7457105.png" alt="Book Exchange" />
         </div>
       </section>
     </div>

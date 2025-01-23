@@ -1,4 +1,5 @@
 import { useContext, createContext, useState } from "react";
+import { jwtDecode } from 'jwt-decode';
 
 const AuthContext = createContext();
 
@@ -10,8 +11,31 @@ export function AuthProvider({ children }) {
         localStorage.setItem('authToken', token); // Save to localStorage
     };
 
+    const removeToken = () => {
+        setAuthToken(null);
+        localStorage.removeItem('authToken'); // Remove from localStorage
+    };
+
+    const login = (token) => {
+        saveToken(token); // Store token and update context
+    };
+
+    const logout = () => {
+        removeToken(); // Clear token and update context
+    };
+
+    const isTokenExpired = (token) => {
+        try {
+            const decodedToken = jwtDecode(token);
+            const currentTime = Date.now() / 1000;
+            return decodedToken.exp < currentTime;
+        } catch (error) {
+            return true; // Token invalid or expired
+        }
+    };
+
     return (
-        <AuthContext.Provider value={{ authToken, saveToken }}>
+        <AuthContext.Provider value={{ authToken, login, logout, isTokenExpired }}>
             {children}
         </AuthContext.Provider>
     );

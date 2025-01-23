@@ -11,7 +11,7 @@ export default function AuthFlow ({ authType = 'login' }) {
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);  // Loading state
 
-    const { saveToken } = useAuthContext();
+    const { login } = useAuthContext();
     const navigate = useNavigate();
 
     // Validation regex
@@ -23,53 +23,55 @@ export default function AuthFlow ({ authType = 'login' }) {
     const handleChange = async (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
-
-        if (name === 'email' && type === 'register') {
-            try {
-                // Check email availability in real time
-                const result = await checkEmail(value);
-                
-                if (result) {
-                    setMessage('');
+    
+        // Perform real-time validation for the current input field
+        switch (name) {
+            case 'email':
+                if (!emailRegex.test(value)) {
+                    setMessage('Invalid email format.');
+                } else if (type === 'register') {
+                    try {
+                        const result = await checkEmail(value); // Check email availability
+                        if (!result) {
+                            setMessage('Email already in use.');
+                        } else {
+                            setMessage('');
+                        }
+                    } catch (error) {
+                        setMessage('Error checking email availability.');
+                    }
                 } else {
-                    setMessage('Email already in use.');
+                    setMessage('');
                 }
-            } catch (error) {
-                setMessage('Error checking email availability.');
-            }
+                break;
+    
+            case 'password':
+                if (!passwordRegex.test(value)) {
+                    setMessage(
+                        'Password must be at least 8 characters long, contain at least 1 uppercase letter, 1 number, and 1 special character.'
+                    );
+                } else {
+                    setMessage('');
+                }
+                break;
+    
+            case 'username':
+                if (!usernameRegex.test(value)) {
+                    setMessage('Username can only contain letters, numbers, and underscores.');
+                } else {
+                    setMessage('');
+                }
+                break;
+    
+            default:
+                setMessage('');
+                break;
         }
-    };
-
-    // Validate form data before submission
-    const validateForm = () => {
-        const { email, password, username } = formData;
-
-        if (type === 'register' && (!username || !usernameRegex.test(username))) {
-            setMessage('Username can only contain letters, numbers, and underscores.');
-            return false;
-        }
-
-        if (!email || !emailRegex.test(email)) {
-            setMessage('Invalid email format.');
-            return false;
-        }
-
-        if (!password || !passwordRegex.test(password)) {
-            setMessage(
-                'Password must be at least 8 characters long, contain at least 1 uppercase letter, 1 number, and 1 special character.'
-            );
-            return false;
-        }
-
-        return true;
-    };
+    }
 
 
     const handleSubmit = async () => {
         if (loading) return;
-        if (!validateForm()) {
-            return; // Prevent submission if validation fails
-        }
         setLoading(true);
         setMessage('');
 
@@ -77,14 +79,14 @@ export default function AuthFlow ({ authType = 'login' }) {
             if (type === 'login') {
                 const data = await loginUser(formData);
                 if (data.token) {
-                    saveToken(data.token); // Save token to context and localStorage
+                    login(data.token); // Save token to context and localStorage
                     setMessage('Login successful!');
                     navigate('/'); // Redirect to homepage
                 }
             } else {
                 const registerData = await registerUser(formData);
                 
-                saveToken(registerData.token); // Save token
+                login(registerData.token); // Save token
                 navigate('/'); // Redirect to homepage
             }
         } catch (error) {
@@ -141,7 +143,7 @@ export default function AuthFlow ({ authType = 'login' }) {
                 </button>
 
                 {/* Submit */}
-                <button className="submit-button" onClick={handleSubmit} disabled={loading || message != ''}>
+                <button className="submit-button" onClick={handleSubmit} disabled={loading || message !== ''}>
                     {loading ? (
                         <span className="loading">Loading...</span>  // Display loading text or animation
                     ) : (

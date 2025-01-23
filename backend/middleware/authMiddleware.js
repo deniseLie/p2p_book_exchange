@@ -12,6 +12,10 @@ const verifyToken = async (req, res, next) => {
             // Get token from header
             token = req.headers.authorization.split(' ')[1]
 
+            if (!token) {
+                return res.status(403).json({ message: 'Access Denied. No token provided.' });
+            }        
+
             // Verify token
             const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
@@ -20,8 +24,8 @@ const verifyToken = async (req, res, next) => {
 
             next()
         } catch (error) {
-            console.log(error)
-            res.status(401).json({ message: 'Not authorized' })
+            // If the token is expired or invalid
+            res.status(401).json({ message: 'Token has expired or is invalid. Please login again.' });
         }
     }
 

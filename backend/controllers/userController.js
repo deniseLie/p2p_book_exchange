@@ -117,6 +117,13 @@ exports.loginUser = async (req, res) => {
     }
 };
 
+// Logout
+exports.logoutUser = (req, res) => {
+    // In a JWT setup, we don't need to do anything here, but we could clear cookies or invalidate sessions
+    res.clearCookie("auth-token"); // If you're using cookies for JWT storage
+    res.status(200).json({ message: "Logged out successfully" });
+};
+
 // Get user Profile
 exports.getUserProfile = async (req, res) => {
     try {
