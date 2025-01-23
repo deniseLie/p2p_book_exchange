@@ -1,16 +1,26 @@
 const express = require('express');
-const { Book } = require('./models');
 const router = express.Router();
+const {
+    getBooks,
+    getBookById,
+    addBook,
+    updateBook,
+    deleteBook,
+} = require('../controllers/bookController');
 
-router.post('/books', async (req, res) => {
-  const { title, author, genre, condition, ownerId, location, coverImageUrl } = req.body;
-  try {
-    const newBook = new Book({ title, author, genre, condition, ownerId, location, coverImageUrl });
-    await newBook.save();
-    res.status(201).json(newBook);
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to add book' });
-  }
-});
+// Fetch all books
+router.get('/', getBooks);
+
+// Fetch a single book by ID
+router.get('/:id', getBookById);
+
+// Add a new book
+router.post('/', addBook);
+
+// Update a book by ID
+router.put('/:id', updateBook);
+
+// Delete a book by ID
+router.delete('/:id', deleteBook);
 
 module.exports = router;
