@@ -1,0 +1,62 @@
+.exchange-detail-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .exchange-title {
+    font-size: 2em;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .progress-detail {
+    border: 2px solid #ddd;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+  }
+  
+  .progress-detail h3 {
+    font-size: 1.5em;
+    margin-bottom: 15px;
+  }
+  
+  .person-a, .person-b {
+    margin-bottom: 20px;
+  }
+  
+  .person-a h4, .person-b h4 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+  }
+  
+  .book-spot {
+    width: 150px;
+    height: 200px;
+    border: 2px dashed #bbb;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .book-cover {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+  
+  .empty-book-spot {
+    font-size: 14px;
+    color: #888;
+    text-align: center;
+  }
+  
+  .person-a p, .person-b p {
+    text-align: center;
+    font-size: 1em;
+  }
+  

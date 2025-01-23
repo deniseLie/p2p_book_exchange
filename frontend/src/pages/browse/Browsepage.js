@@ -3,6 +3,7 @@ import PageLayout from '../Template/template';
 import { useAuthContext } from '../../context/AuthContext';
 import { browseUserBooks } from '../../axios/browse_req';
 import '../../css/BrowsePage.css';
+import { useNavigate } from 'react-router-dom';
 
 const BrowseUserBooks = () => {
     // State variables for the data, filters, and pagination
@@ -25,6 +26,7 @@ const BrowseUserBooks = () => {
     const [loading, setLoading] = useState(false);
 
     const { authToken } = useAuthContext();
+    const navigate = useNavigate();
 
     // Function to fetch user books from the API
     const fetchUserBooks = async (page = 1) => {
@@ -79,6 +81,16 @@ const BrowseUserBooks = () => {
             fetchUserBooks(newPage);  // Fetch user books with the updated page
         }
     };
+
+    // Handle book on click
+    const bookOnClick = (userBook) => {
+        navigate('/')
+    }
+
+    // Request Exchange
+    const requestExchange = () => {
+        navigate('/request-exchange')
+    }
     
 
     return (
@@ -140,7 +152,7 @@ const BrowseUserBooks = () => {
             ) : (
                 <ul>
                     {userBooks?.map((userBook) => (
-                        <li key={userBook?._id}>
+                        <li key={userBook?._id} onClick={bookOnClick}>
                             <div>
                                 <strong>Title:</strong> {userBook?.bookId?.title}
                             </div>
@@ -159,6 +171,8 @@ const BrowseUserBooks = () => {
                             <div>
                                 <strong>User:</strong> {userBook?.userId.username}
                             </div>
+
+                            <button onClick={requestExchange}>Request Exchange</button>
                         </li>
                     ))}
                 </ul>

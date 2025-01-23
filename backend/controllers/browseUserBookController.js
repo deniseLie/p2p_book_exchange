@@ -63,13 +63,16 @@ exports.browseUserBooks = async (req, res) => {
             limit = 10,
         } = req.query;
 
+        // User Id
+        const userId = req.user._id; 
+        
         // Build a filter object
         const filter = {};
+        
+        // Exclude books listed by the current user
+        filter.userId = { $ne: currentUserId };
 
         // Apply filters for books
-        // if (title) filter['bookId.title'] = { $regex: title, $options: 'i' }; // Case-insensitive title search
-        // if (author) filter['bookId.author'] = { $regex: author, $options: 'i' };
-        // if (genre) filter['bookId.genre'] = { $regex: genre, $options: 'i' };
         if (bookCondition) filter.bookCondition = bookCondition; // Exact match for condition
         if (bookStatus) filter.bookStatus = bookStatus; // Match book status (e.g., 'available', 'pending')
 

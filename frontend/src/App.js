@@ -5,8 +5,7 @@ import LoginRegPage from './pages/auth/AuthFlow';
 import { AuthProvider } from './context/AuthContext';
 import ProfilePage from './pages/profile/ProfilePage';
 import BrowseUserBooks from './pages/browse/Browsepage';
-// import AddBook from './pages/AddBook';
-// import Profile from './pages/Profile';
+import ExchangeDetailPage from './pages/exchange/ExchangeDetailPage';
 
 const App = () => (
   <AuthProvider>
@@ -16,6 +15,7 @@ const App = () => (
         <Route path="/auth" element={<LoginRegPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/browse" element={<BrowseUserBooks />} />
+        <Route path="/exchangeDetail" element={<ExchangeDetailPage />} />
       </Routes>
     </Router>
   </AuthProvider> 
