@@ -6,6 +6,9 @@ const { verifyToken } = require('../middleware/authMiddleware');
 // Fetch all books
 router.get('/', verifyToken, bookController.getAllBooks);
 
+// Search from all books
+router.get('/search', verifyToken, bookController.getBookSearch);
+
 // Fetch a single book by ID
 router.get('/:bookId', verifyToken, bookController.getBookById);
 

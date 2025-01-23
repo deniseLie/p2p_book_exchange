@@ -59,22 +59,3 @@ export const resetPassword = async ({ resetToken, formData }) => {
     }
 }
 
-// Get user profile
-export const getUserProfile = async ({ formData }) => {
-    try {
-        const response = await axios.get('http://localhost:5000/users/profile');
-        return response.data;
-    } catch (error) {
-        console.error('Error Get user profile user:', error);
-    }
-}
-
-// Update user profile
-export const updateUserProfile = async ({ formData }) => {
-    try {
-        const response = await axios.put('http://localhost:5000/users/profile', formData);
-        return response.data;
-    } catch (error) {
-        console.error('Error Update user profile user:', error);
-    }
-}

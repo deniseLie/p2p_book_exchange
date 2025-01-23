@@ -11,7 +11,7 @@ const userBookSchema = new mongoose.Schema({
   },
   bookCondition: { 
     type: String, 
-    enum: ['new', 'good', 'fair', 'poor'], 
+    enum: ['new', 'like-new', 'good', 'acceptable', 'poor'], 
     default: 'good' 
   },
   createdAt: { type: Date, default: Date.now },

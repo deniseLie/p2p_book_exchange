@@ -3,8 +3,8 @@ const Book = require('../models/bookModel');
 // Create a new book
 exports.createBook = async (req, res) => {
     try {
-        const { title, author, genre, coverImage, description } = req.body;
-        const newBook = new Book({ title, author, genre, coverImage, description });
+        const { title, author, genre} = req.body;
+        const newBook = new Book({ title, author, genre });
         await newBook.save();
         res.status(201).json({ message: 'Book created successfully', newBook });
     } catch (error) {
@@ -19,6 +19,25 @@ exports.getAllBooks = async (req, res) => {
         res.status(200).json(books);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching books', error });
+    }
+};
+
+exports.getBookSearch = async (req, res) => {
+    try {
+        const query = req.query.query;
+
+        if (!query || query.trim() === "") {
+            return res.status(400).json({ message: "Query parameter is required" });
+        }
+
+        // Escape special regex characters in the query string to prevent regex errors
+        const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        
+        const books = await Book.find({ title: { $regex: query, $options: "i" } }).select("id title author genre description");
+        res.status(200).json(books);
+    } catch (error) {
+        console.error("Error searching books:", error);
+        res.status(500).json({ message: "Server error" });
     }
 };
 

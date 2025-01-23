@@ -4,10 +4,13 @@ const browseUserBookController = require('../controllers/browseUserBookControlle
 const { verifyToken } = require('../middleware/authMiddleware');
 
 // Browse books
-router.get('/books', browseUserBookController.browseBooks);
+router.get('/books', verifyToken, browseUserBookController.browseBooks);
 
 // Browse userBooks
-router.get('/userbooks', browseUserBookController.browseUserBooks);
+router.get('/userbooks', verifyToken, browseUserBookController.browseUserBooks);
+
+// Browse available not listed books by user
+router.get('/unlistedBookByUserId', verifyToken, browseUserBookController.getBookSearchNotListedUser);
 
 // Get details of a specific user's book
 router.get('/:userBookId', verifyToken, browseUserBookController.browseUserBook);

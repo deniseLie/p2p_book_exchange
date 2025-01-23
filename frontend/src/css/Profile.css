@@ -1,0 +1,47 @@
+.profile-page {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.profile-header h1 {
+    font-size: 24px;
+}
+
+.book-section {
+    margin-bottom: 30px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.book-list {
+    display: flex;
+    gap: 15px;
+}
+
+.book-item {
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    width: 100px;
+}
+
+.book-cover-image {
+    width: 70px;
+    height: 100px;
+    border: 2px solid #ccc;
+}

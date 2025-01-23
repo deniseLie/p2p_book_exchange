@@ -1,4 +1,5 @@
 const UserBook = require('../models/userBookModel');
+const Book = require('../models/bookModel');
 
 // Browse available books with optional filters, sorting, and pagination
 exports.browseBooks = async (req, res) => {
@@ -149,5 +150,39 @@ exports.browseUserBook = async (req, res) => {
     } catch (error) {
         console.error('Error fetching user book details:', error);
         res.status(500).json({ message: 'Error fetching user book details', error });
+    }
+};
+
+// Browse available not listed books by user
+exports.getBookSearchNotListedUser = async (req, res) => {
+    try {
+        const query = req.query.query;
+        const userId = req.user._id; 
+
+        if (!query || query.trim() === "") {
+            return res.status(400).json({ message: "Query parameter is required" });
+        }
+
+        if (!userId) {
+            return res.status(400).json({ message: "User ID is required" });
+        }
+
+        // Escape special regex characters in the query string to prevent regex errors
+        const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+        // Step 1: Find all bookIds related to the userId
+        const userBooks = await UserBook.find({ userId }).select("bookId");
+        const userBookIds = userBooks.map((ub) => ub.bookId);
+
+        // Step 2: Query the books collection, excluding books already associated with the user
+        const books = await Book.find({
+            title: { $regex: escapedQuery, $options: "i" },
+            _id: { $nin: userBookIds } // Exclude books in the user's list
+        }).select("id title author genre description");
+
+        res.status(200).json(books);
+    } catch (error) {
+        console.error("Error searching books:", error);
+        res.status(500).json({ message: "Server error" });
     }
 };

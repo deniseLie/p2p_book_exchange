@@ -1,0 +1,31 @@
+.page-layout {
+    min-height: 100vh; /* Ensure it covers the full viewport height */
+    display: flex;
+    flex-direction: column;
+}
+
+.page-header {
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    background-color: #ffffff; /* Default header background color */
+    border-bottom: 1px solid #ddd;
+}
+
+.back-button {
+    background: none;
+    border: none;
+    color: #007bff;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 8px;
+}
+
+.back-button:hover {
+    text-decoration: underline;
+}
+
+.page-content {
+    padding: 16px;
+    flex: 1;
+}
