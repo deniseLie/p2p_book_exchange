@@ -11,4 +11,7 @@ router.put('/update', exchangeController.updateExchangeStatus);
 // Route for fetching all exchanges for a specific user
 router.get('/user/:userID', exchangeController.getUserExchanges);
 
+// Route for fetching all exchanges for a specific user
+router.get('/exchange/:exchangeID', getExchangeById);
+
 module.exports = router;

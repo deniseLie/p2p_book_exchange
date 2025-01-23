@@ -92,3 +92,26 @@ exports.getUserExchanges = async (req, res) => {
       res.status(500).json({ message: 'Server error' });
     }
 };
+
+// Fetch a specific exchange request by exchangeID
+exports.getExchangeById = async (req, res) => {
+    try {
+        const { exchangeId } = req.params; // Get the exchangeID from the route parameter
+
+        // Find the exchange by ID and populate related fields
+        const exchange = await Exchange.findById(exchangeId)
+            .populate('requesterUserID ownerUserID requesterBookID ownerBookID');
+
+        if (!exchange) {
+            return res.status(404).json({ message: 'Exchange not found' });
+        }
+
+        res.status(200).json({
+            message: 'Exchange fetched successfully',
+            exchange,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
