@@ -6,7 +6,32 @@ const nodemailer = require('nodemailer');
 
 // Register User
 const registerUser = async (req, res) => {
-    const { name, email, password } = req.body;
+    const { username, email, password } = req.body;
+
+    // Check if all required fields are provided
+    if (!username || !email || !password) {
+        return res.status(400).json({ message: 'Please provide all required fields: username, email, and password' });
+    }
+
+    // Validate email format
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    if (!emailRegex.test(email)) {
+        return res.status(400).json({ message: 'Invalid email format' });
+    }
+
+    // Validate password (at least 8 characters, 1 number, 1 uppercase, 1 special character)
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordRegex.test(password)) {
+        return res.status(400).json({
+            message: 'Password must be at least 8 characters long, contain at least 1 uppercase letter, 1 number, and 1 special character.'
+        });
+    }
+
+    // Validate username (no spaces or special characters)
+    const usernameRegex = /^[a-zA-Z0-9_]+$/; // Allow only alphanumeric characters and underscores
+    if (!usernameRegex.test(username)) {
+        return res.status(400).json({ message: 'Username can only contain letters, numbers, and underscores' });
+    }
 
     try {
         // Check if user already exists
@@ -21,14 +46,14 @@ const registerUser = async (req, res) => {
 
         // Create new user
         const user = await User.create({
-            name,
+            username,
             email,
             password: hashedPassword,
         });
 
         res.status(201).json({
             _id: user._id,
-            name: user.name,
+            username: user.username,
             email: user.email,
         });
     } catch (error) {
@@ -40,6 +65,11 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
     const { email, password } = req.body;
   
+    // Check if all required fields are provided
+    if (!email || !password) {
+        return res.status(400).json({ message: 'Please provide both email and password' });
+    }
+
     try {
         // Find user by email
         const user = await User.findOne({ email });
@@ -60,7 +90,7 @@ const loginUser = async (req, res) => {
     
         res.json({
             _id: user._id,
-            name: user.name,
+            username: user.username,
             email: user.email,
             token,
         });
@@ -70,13 +100,29 @@ const loginUser = async (req, res) => {
   };
 
 const updateUserProfile = async (req, res) => {
-    const { name, location, bio } = req.body;
+    const { username, location, bio } = req.body;
   
+    // Check if user is authenticated
+    if (!req.user || !req.user.id) {
+        return res.status(401).json({ message: 'Unauthorized, please log in first' });
+    }
+
+    // Ensure the request body is not empty
+    if (!username && !location && !bio) {
+        return res.status(400).json({ message: 'Please provide at least one field to update (username, location, or bio)' });
+    }
+
+    // Validate username (no spaces or special characters)
+    const usernameRegex = /^[a-zA-Z0-9_]+$/; // Allow only alphanumeric characters and underscores
+    if (!usernameRegex.test(username)) {
+        return res.status(400).json({ message: 'Username can only contain letters, numbers, and underscores' });
+    }
+
     try {
         // Find and update user
         const user = await User.findByIdAndUpdate(
             req.user.id, // Ensure you authenticate the user first
-            { name, location, bio },
+            { username, location, bio },
             { new: true } // Return updated document
         );
   
@@ -86,7 +132,7 @@ const updateUserProfile = async (req, res) => {
   
         res.json({
             _id: user._id,
-            name: user.name,
+            username: user.username,
             email: user.email,
             location: user.location,
             bio: user.bio,
@@ -99,6 +145,11 @@ const updateUserProfile = async (req, res) => {
 // Password Reset Email
 const sendPasswordResetEmail = async (req, res) => {
     const { email } = req.body;
+
+    // Check if email is provided
+    if (!email) {
+        return res.status(400).json({ message: 'Please provide an email' });
+    }
 
     try {
         // Check if the user exists
@@ -152,6 +203,19 @@ const sendPasswordResetEmail = async (req, res) => {
 const resetPassword = async (req, res) => {
     const { resetToken, newPassword } = req.body;
 
+    // Check if resetToken and newPassword are provided
+    if (!resetToken || !newPassword) {
+        return res.status(400).json({ message: 'Please provide both reset token and new password' });
+    }
+
+    // Validate password (at least 8 characters, 1 number, 1 uppercase, 1 special character)
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordRegex.test(newPassword)) {
+        return res.status(400).json({
+            message: 'Password must be at least 8 characters long, contain at least 1 uppercase letter, 1 number, and 1 special character.'
+        });
+    }
+
     try {
         // Hash the provided reset token
         const hashedResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
@@ -164,6 +228,12 @@ const resetPassword = async (req, res) => {
 
         if (!user) {
             return res.status(400).json({ message: 'Invalid or expired reset token' });
+        }
+
+        // Check if the new password is the same as the current (old) password
+        const isMatch = await bcrypt.compare(newPassword, user.password);
+        if (isMatch) {
+            return res.status(400).json({ message: 'New password cannot be the same as the old password' });
         }
 
         // Hash new password
