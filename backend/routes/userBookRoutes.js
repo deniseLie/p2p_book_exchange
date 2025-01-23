@@ -3,8 +3,11 @@ const router = express.Router();
 const userBookController = require('../controllers/userBookController');
 const { verifyToken } = require('../middleware/authMiddleware');
 
+// Get all books that's available
+
+
 // Get all books of a user
-router.get('/', verifyToken, userBookController.getUserBooks);
+router.get('/', verifyToken, userBookController.getUserBooksbyUserId);
 
 // Add a book to user's collection
 router.post('/', verifyToken, userBookController.addUserBook);

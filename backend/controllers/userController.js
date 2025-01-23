@@ -4,13 +4,13 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 const nodemailer = require('nodemailer');
 
-// Get all Users
-const getAllUsers = async (req, res) => {
+// Get all users
+exports.getAllUsers = async (req, res) => {
     try {
-        const users = await User.find();
+        const users = await User.find().select('-password'); // Exclude password field
         res.status(200).json(users);
     } catch (error) {
-        res.status(500).json({ message: 'Server Error' });
+        res.status(500).json({ message: 'Error fetching users', error });
     }
 };
 
