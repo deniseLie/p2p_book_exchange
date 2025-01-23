@@ -5,6 +5,7 @@ import PageLayout from '../Template/template';
 import { useAuthContext } from '../../context/AuthContext';
 import AddBook from './AddBook';
 import { addABook } from '../../axios/book_req';
+import { useNavigate } from 'react-router-dom';
 
 export default function ProfilePage () {
     
@@ -15,7 +16,8 @@ export default function ProfilePage () {
     const [addingBook, setAddingBook] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    const { authToken } = useAuthContext();
+    const { authToken, logout } = useAuthContext();
+    const navigate = useNavigate();
 
     useEffect(() => {
         getProfile();
@@ -97,6 +99,12 @@ export default function ProfilePage () {
         }
     }
 
+    // Function login out
+    const loginOut = () => {
+        logout();
+        navigate('/');
+    }
+
     return (
         <PageLayout>
             <div className="profile-page">
@@ -130,6 +138,9 @@ export default function ProfilePage () {
                             <h1>{profile?.username}</h1>
                             <p>{profile?.email}</p>
                             <button onClick={handleEditProfile}>✏️</button>
+                            <a href="#" onClick={loginOut} style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }}>
+                                Logout
+                            </a>
                         </div>
                     )}
                 </div>
