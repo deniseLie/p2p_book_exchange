@@ -1,5 +1,4 @@
 const UserBook = require('../models/userBookModel');
-const Book = require('../models/bookModel');
 
 // Get all books of a user
 exports.getUserBooksbyUserId = async (req, res) => {

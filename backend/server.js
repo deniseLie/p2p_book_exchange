@@ -12,6 +12,7 @@ const bookRoutes = require('./routes/bookRoutes');
 const userRoutes = require('./routes/userRoutes');
 const userBookRoutes = require('./routes/userBookRoutes');
 const browseUserBookRoutes = require('./routes/browseUserBookRoutes');
+const exchangeRouter = require('./routes/exchangeRouter');
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use('/api/books', bookRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/userbooks', userBookRoutes);
 app.use('/api/browse', browseUserBookRoutes);
+app.use('/api/exchanges', exchangeRouter);
 
 // Connection URI from the environment variable
 const mongoURI = process.env.MONGO_URI; // Load from environment variable
