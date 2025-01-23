@@ -111,7 +111,7 @@ const ExchangeDetailPage = () => {
   
   const updateBookPersonA = async () => {
     try {
-      const res = await updateRequesterBookID(exchangeId, selectedBookPersonA?.id);
+      const res = await 6(exchangeId, selectedBookPersonA?.id);
       console.log('updateBookPersonA', res);
 
     } catch (error) {

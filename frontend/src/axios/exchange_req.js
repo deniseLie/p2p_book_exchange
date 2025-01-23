@@ -103,7 +103,7 @@ export const updateExchangeStatus = async (authToken, exchangeID, status) => {
 // Function to update the requester book ID
 export const updateRequesterBookID = async (exchangeID, requesterBookID) => {
     try {
-      const response = await axios.put('/api/exchange/updateRequesterBookID', {
+      const response = await axios.put('/exchanges/updateRequesterBookID', {
         exchangeID,
         requesterBookID,
       });
