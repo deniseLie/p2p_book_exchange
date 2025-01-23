@@ -21,6 +21,11 @@ exports.createExchangeRequest = async (req, res) => {
         if (!ObjectId.isValid(ownerUserID)) {
             return res.status(400).json({ message: 'Invalid ownerUserID' });
         }
+
+        // Ensure requester and owner are not the same
+        if (requesterUserID.toString() === ownerUserID.toString()) {
+            return res.status(400).json({ message: 'Requester and owner cannot be the same person' });
+        }
         
         const requester = await User.findById(requesterUserID);
         const owner = await User.findById(ownerUserID);
@@ -47,12 +52,18 @@ exports.createExchangeRequest = async (req, res) => {
             ownerUserID,
             ownerBookID,
         });
-    
+
+        // Save the exchange and populate the related fields
         const savedExchange = await exchange.save();
+
+        // Populate the saved exchange with full data
+        const populatedExchange = await Exchange.findById(savedExchange._id)
+            .populate('requesterUserID ownerUserID ownerBookID');
+    
     
         res.status(201).json({
             message: 'Exchange request created successfully',
-            exchange: savedExchange,
+            exchange: populatedExchange,
         });
     } catch (err) {
       console.error(err?.message, err);
@@ -67,7 +78,7 @@ exports.updateExchangeStatus = async (req, res) => {
     
         // Validate status
         if (!['pending', 'denied', 'inprogress', 'halfApproved', 'canceled', 'completed'].includes(status)) {
-            return res.status(400).json({ message: 'Invalid status' });
+            return res.status(400).json({ message: `Invalid status of ${status}` });
         }
     
         // Find the exchange by ID
@@ -99,12 +110,9 @@ exports.getPendingExchanges = async (req, res) => {
     try {
         // Get userId from the authenticated user
         const userId = req.user._id;
-
         if (!userId) {
             return res.status(400).json({ message: 'User ID is missing from the request' });
         }
-
-        console.log('Fetching pending exchanges for user:', userId);
 
         // Find all exchanges where the ownerUserID is the current user and status is 'pending'
         const exchanges = await Exchange.find({
@@ -114,7 +122,7 @@ exports.getPendingExchanges = async (req, res) => {
         .populate('requesterUserID ownerUserID requesterBookID ownerBookID'); // Populate relevant fields
 
         if (!exchanges || exchanges.length === 0) {
-            return res.status(404).json({ message: 'No pending exchanges found' });
+            return res.status(201).json({ message: 'No pending exchanges found' });
         }
 
         return res.status(200).json({
@@ -168,3 +176,40 @@ exports.getExchangeById = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 };
+
+// Update the Requester's Book ID in an exchange
+exports.updateRequesterBookID = async (req, res) => {
+    try {
+      const { exchangeID, requesterBookID } = req.body;
+  
+      // Validate that requesterBookID is an array of ObjectIds (or a single ObjectId)
+      if (!requesterBookID || (Array.isArray(requesterBookID) && requesterBookID.length === 0)) {
+        return res.status(400).json({ message: 'Requester book ID is required' });
+      }
+  
+      // Find the exchange by ID
+      const exchange = await Exchange.findById(exchangeID);
+  
+      if (!exchange) {
+        return res.status(404).json({ message: 'Exchange not found' });
+      }
+  
+      // Update the requesterBookID field with the new book(s)
+      exchange.requesterBookID = requesterBookID;
+  
+      // Update the updatedAt field
+      exchange.updatedAt = Date.now();
+  
+      // Save the updated exchange document
+      const updatedExchange = await exchange.save();
+  
+      res.status(200).json({
+        message: 'Requester Book ID updated successfully',
+        exchange: updatedExchange,
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Server error' });
+    }
+  };
+  

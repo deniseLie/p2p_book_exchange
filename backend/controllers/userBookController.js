@@ -12,12 +12,22 @@ exports.getUserBooksbyUserId = async (req, res) => {
     }
 };
 
+// Get all books of a user
+exports.getUserBooksAvailablebyUserId = async (req, res) => {
+  try {
+      const userId = req.user._id; 
+
+      const userBooks = await UserBook.find({ userId, bookStatus: 'available' }).populate('bookId');
+      res.status(200).json(userBooks);
+  } catch (error) {
+      res.status(500).json({ message: 'Error fetching user books', error });
+  }
+};
+
 // Add a book to user's collection
 exports.addUserBook = async (req, res) => {
     try {
-      console.log(req.user);
-      console.log(req.body);
-        const userId = req.user._id;  // Extract userId from req.user
+        const userId = req.params;  // Extract userId from param
         const { bookId, bookStatus = 'available', bookCondition } = req.body;
 
         // Check if the book already exists in the user's collection

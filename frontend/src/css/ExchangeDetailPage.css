@@ -1,62 +1,126 @@
 .exchange-detail-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    font-family: Arial, sans-serif;
-  }
-  
-  .exchange-title {
-    font-size: 2em;
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .progress-detail {
-    border: 2px solid #ddd;
-    padding: 20px;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-  }
-  
-  .progress-detail h3 {
-    font-size: 1.5em;
-    margin-bottom: 15px;
-  }
-  
-  .person-a, .person-b {
-    margin-bottom: 20px;
-  }
-  
-  .person-a h4, .person-b h4 {
-    font-size: 1.2em;
-    margin-bottom: 10px;
-  }
-  
-  .book-spot {
-    width: 150px;
-    height: 200px;
-    border: 2px dashed #bbb;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  
-  .book-cover {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: cover;
-    border-radius: 4px;
-  }
-  
-  .empty-book-spot {
-    font-size: 14px;
-    color: #888;
-    text-align: center;
-  }
-  
-  .person-a p, .person-b p {
-    text-align: center;
-    font-size: 1em;
-  }
-  
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.exchange-title {
+  font-size: 2em;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.exchangeButtons {
+  margin-top: 50px;
+}
+
+.exchange-green-button {
+ background-color: green;
+ color: white;
+ padding: 10px;
+}
+
+.exchange-red-button {
+  background-color: red;
+  color: white;
+  padding: 10px;
+}
+
+.progress-detail {
+  border: 2px solid #ddd;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.progress-detail h3 {
+  font-size: 1.5em;
+  margin-bottom: 15px;
+}
+
+.persons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.person-a, .person-b {
+  margin-bottom: 20px;
+  width: 50%;
+  align-items: center;
+  flex: center;
+}
+
+.person-a h4, .person-b h4 {
+  font-size: 1.2em;
+  margin-bottom: 10px;
+}
+
+.book-spot {
+  width: 150px;
+  height: 200px;
+  border: 2px dashed #bbb;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.book-cover {
+  width: 150px; 
+  height: 200px; 
+  object-fit: cover;
+}
+
+.empty-book-spot {
+  flex: 1;
+  font-size: 14px;
+  color: #888;
+  text-align: center;
+  justify-content: center;
+}
+
+.book-spot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.book-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.book-cover-image {
+  width: 120px; /* Set your desired width */
+  height: 180px; /* Set your desired height */
+}
+
+.book-title {
+  font-size: 14px;
+  text-align: center;
+  font-weight: bold;
+  color: #333;
+}
+
+.book-cover-wrapper {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.book-cover-wrapper:hover {
+  transform: scale(1.05); /* Slightly enlarge the wrapper */
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2); /* Add a shadow effect */
+}
+
+
+.book-cover {
+  width: 150px; 
+  height: 200px; 
+  object-fit: cover;
+  cursor: pointer;
+}
+
+
+.chooseBook {
+  text-align: left;
+}

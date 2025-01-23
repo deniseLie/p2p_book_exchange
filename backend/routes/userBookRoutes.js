@@ -6,6 +6,9 @@ const { verifyToken } = require('../middleware/authMiddleware');
 // Get all books of a user
 router.get('/', verifyToken, userBookController.getUserBooksbyUserId);
 
+// Get all books of a user
+router.get('/available/:userId', verifyToken, userBookController.getUserBooksAvailablebyUserId);
+
 // Add a book to user's collection
 router.post('/', verifyToken, userBookController.addUserBook);
 

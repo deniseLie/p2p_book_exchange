@@ -13,9 +13,13 @@ router.put('/update', verifyToken, exchangeController.updateExchangeStatus);
 router.get('/user/:userID', verifyToken, exchangeController.getUserExchanges);
 
 // Get a specific exchange details by exchange id 
-router.get('/:exchangeId', verifyToken, exchangeController.getExchangeById);
+router.get('/id/:exchangeId', verifyToken, exchangeController.getExchangeById);
 
 // Get all pending exchanges where the user is the owner (someone is requesting the user's books)
 router.get('/pending', verifyToken, exchangeController.getPendingExchanges);
+
+
+// Define the route to update requester book IDs
+router.put('/updateRequesterBookID', exchangeController.updateRequesterBookID);
 
 module.exports = router;

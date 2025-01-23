@@ -34,14 +34,15 @@ const ExchangesListPage = () => {
     // Fetch pending exchanges
     useEffect(() => {
         const fetchPendingExchanges = async () => {
-        try {
-            const data = await getPendingExchangesByUserId(authToken, userId); // Fetch pending data from API
-            setPendingExchanges(data?.exchanges || []); // Set pending exchanges data
-        } catch (error) {
-            setError('Failed to load pending exchanges'); // Set error message
-        } finally {
-            setLoading(false); // Stop loading
-        }
+            try {
+                const data = await getPendingExchangesByUserId(authToken, userId); // Fetch pending data from API
+                console.log('pending data', data)
+                setPendingExchanges(data?.exchanges || []); // Set pending exchanges data
+            } catch (error) {
+                setError('Failed to load pending exchanges'); // Set error message
+            } finally {
+                setLoading(false); // Stop loading
+            }
         };
 
         fetchPendingExchanges(); // Call the fetch function
@@ -51,6 +52,8 @@ const ExchangesListPage = () => {
     const viewDetails = (exchangeId) => {
         navigate('/exchangeDetail', { state: { exchangeId: exchangeId } });
     };
+
+    
 
     return (
         <PageLayout>
@@ -133,8 +136,8 @@ const ExchangesListPage = () => {
                                                     <li key={index}>{book.title}</li>
                                                 ))}
                                             </ul>
+                                            <button onClick={() => viewDetails(exchange._id)}>View Details</button>
                                         </div>
-                                        <button onClick={() => viewDetails(exchange._id)}>View Details</button>
                                     </div>
                                 </div>
                             ))

@@ -28,3 +28,17 @@ export const addABook = async (token, formData) => {
         console.error('Error Add a book:', error, error?.message);
     }
 }
+
+// Get available books by user id 
+export const getAvailableBooksByUserId = async (token, userId) => {
+    try {
+        const response = await axios.get(`http://localhost:5000/userBooks/available/${userId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`, // Include the Bearer token
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error Get available books by user id:', error);
+    }
+}
