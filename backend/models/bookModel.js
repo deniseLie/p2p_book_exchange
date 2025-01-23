@@ -5,10 +5,8 @@ const bookSchema = new mongoose.Schema({
   title: { type: String, required: true },
   author: { type: String, required: true },
   genre: { type: String, required: true },
-  condition: { type: String, required: true },
-  ownerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // Reference to User
-  location: { type: String, required: false },
-  coverImageUrl: { type: String, required: false }, // URL to the book's cover image
+  coverImage: { type: Buffer }, // Store the image as a Buffer
+  description: { type: String, required: false },
   createdAt: { type: Date, default: Date.now },
 });
 

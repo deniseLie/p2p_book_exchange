@@ -4,6 +4,16 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 const nodemailer = require('nodemailer');
 
+// Get all Users
+const getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find();
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({ message: 'Server Error' });
+    }
+};
+
 // Register User
 const registerUser = async (req, res) => {
     const { username, email, password } = req.body;
@@ -255,6 +265,7 @@ const resetPassword = async (req, res) => {
 };
 
 module.exports = {
+    getAllUsers,
     registerUser,
     loginUser,
     updateUserProfile,

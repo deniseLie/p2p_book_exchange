@@ -10,6 +10,7 @@ dotenv.config();
 const connectDB = require('./config/db');
 const bookRoutes = require('./routes/bookRoutes');
 const userRoutes = require('./routes/userRoutes');
+const userBookRoutes = require('./routes/userBookRoutes');
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use(cors());
 app.use(express.json()); // For JSON body parsing
 app.use('/api/books', bookRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/userbooks', userBookRoutes);
 
 // Connection URI from the environment variable
 const mongoURI = process.env.MONGO_URI; // Load from environment variable
