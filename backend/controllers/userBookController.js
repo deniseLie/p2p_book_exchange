@@ -27,7 +27,8 @@ exports.getUserBooksAvailablebyUserId = async (req, res) => {
 // Add a book to user's collection
 exports.addUserBook = async (req, res) => {
     try {
-        const userId = req.params;  // Extract userId from param
+        const userId = req.user._id;  // Extract userId from param
+       
         const { bookId, bookStatus = 'available', bookCondition } = req.body;
 
         // Check if the book already exists in the user's collection
